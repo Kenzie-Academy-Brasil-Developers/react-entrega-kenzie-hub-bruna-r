@@ -1,16 +1,16 @@
 import { Link } from "react-router-dom";
 import Logo from "../../assets/Logo.svg";
-import { RegisterForm } from "../../components/RegisterForm";
+import { RegisterForm } from "../../components/forms/RegisterForm";
 import { StyledHeaderPage } from "../../styles/header";
 
-export function RegisterPage({ registerUser }) {
+export function RegisterPage() {
   return (
     <>
       <StyledHeaderPage>
         <img src={Logo} />
         <Link to="/">Voltar</Link>
       </StyledHeaderPage>
-      <RegisterForm registerUser={registerUser} />
+      <RegisterForm />
     </>
   );
 }

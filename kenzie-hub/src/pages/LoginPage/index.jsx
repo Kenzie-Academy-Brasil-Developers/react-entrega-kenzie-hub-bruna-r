@@ -1,14 +1,14 @@
 import Logo from "../../assets/Logo.svg";
-import { LoginForm } from "../../components/LoginForm";
 import { StyledHeaderLoginPage } from "./style";
+import { LoginForm } from "../../components/forms/LoginForm";
 
-export function LoginPage({ loginUser }) {
+export function LoginPage() {
   return (
     <>
       <StyledHeaderLoginPage>
         <img src={Logo} />
       </StyledHeaderLoginPage>
-      <LoginForm loginUser={loginUser} />
+      <LoginForm />
     </>
   );
 }

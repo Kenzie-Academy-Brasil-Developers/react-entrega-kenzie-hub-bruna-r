@@ -1,10 +1,13 @@
 import { useForm } from "react-hook-form";
-import { Input } from "../Input";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginFormSchema } from "./loginFormSchema";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "../../../providers/UserContext";
+import { Input } from "../Input";
 
-export function LoginForm({ loginUser }) {
+export function LoginForm() {
+  const { loginUser } = useContext(UserContext);
   const {
     register,
     handleSubmit,

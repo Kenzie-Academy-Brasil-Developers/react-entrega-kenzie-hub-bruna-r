@@ -3,8 +3,11 @@ import { Input } from "../Input";
 import { Select } from "../Select";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { registerFormSchema } from "./registerFormSchema";
+import { useContext } from "react";
+import { UserContext } from "../../../providers/UserContext";
 
-export function RegisterForm({ registerUser }) {
+export function RegisterForm() {
+  const { registerUser } = useContext(UserContext);
   const {
     register,
     handleSubmit,
