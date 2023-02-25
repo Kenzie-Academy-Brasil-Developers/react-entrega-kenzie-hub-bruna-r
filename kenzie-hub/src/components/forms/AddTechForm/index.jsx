@@ -7,7 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Input } from "../Input";
 
 export function AddTechForm() {
-  const { createCardTech, setModal } = useContext(TechContext);
+  const { createCardTech, setModalCreateTech } = useContext(TechContext);
   const {
     register,
     handleSubmit,
@@ -19,14 +19,14 @@ export function AddTechForm() {
 
   const submit = (formData) => {
     createCardTech(formData);
-    setModal(false);
+    setModalCreateTech(false);
     reset();
   };
   return (
     <form onSubmit={handleSubmit(submit)}>
       <div className="HeaderForm">
         <p>Cadastrar Tecnologia</p>
-        <p onClick={() => setModal(false)}>X</p>
+        <p onClick={() => setModalCreateTech(false)}>X</p>
       </div>
       <Input
         type="text"

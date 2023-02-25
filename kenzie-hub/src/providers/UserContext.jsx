@@ -9,6 +9,8 @@ export const UserContext = createContext({});
 export const UserProvider = ({ children }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [techs, setTechs] = useState([]);
+  const { loading, setLoading } = useState(false);
 
   const registerUser = async (formData) => {
     try {
@@ -25,6 +27,7 @@ export const UserProvider = ({ children }) => {
       const response = await api.post("/sessions", formData);
       toast.success("Login realizado com sucesso!");
       setUser(response.data.user);
+      setTechs(response.data.user.techs);
       localStorage.setItem("@TOKEN", response.data.token);
       localStorage.setItem("@USERID", response.data.user.id);
       navigate("/dashboard");
@@ -43,8 +46,11 @@ export const UserProvider = ({ children }) => {
             headers: { Authorization: `Bearer ${token}` },
           });
           setUser(response.data);
+          setTechs(response.data.techs);
           navigate("/dashboard");
-        } catch (error) {}
+        } catch (error) {
+          localStorage.removeItem("@TOKEN");
+        }
       };
       AutoLogin();
     }
@@ -59,7 +65,9 @@ export const UserProvider = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ registerUser, loginUser, logOut, user }}>
+    <UserContext.Provider
+      value={{ registerUser, loginUser, logOut, user, techs, setTechs }}
+    >
       {children}
     </UserContext.Provider>
   );

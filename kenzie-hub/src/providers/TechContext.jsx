@@ -1,38 +1,26 @@
-import { useEffect } from "react";
-import { createContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../services/api";
+import { UserContext } from "./UserContext";
+import { toast } from "react-toastify";
 
 export const TechContext = createContext({});
 
 export const TechProvider = ({ children }) => {
-  const [modal, setModal] = useState(false);
-  const [techs, setTech] = useState([]);
+  const [modalCreateTech, setModalCreateTech] = useState(false);
+  const { techs, setTechs } = useContext(UserContext);
+  const [modalEditTech, setModalEditTech] = useState(null);
   const token = localStorage.getItem("@TOKEN");
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (token) {
-      const loadTechs = async () => {
-        try {
-          const response = await api.get("/profile", {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          setTech(...techs, response.data.techs);
-          navigate("/dashboard");
-        } catch (error) {}
-      };
-      loadTechs();
-    }
-  }, []);
 
   const createCardTech = async (formData) => {
     try {
       const response = await api.post("/users/techs", formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setTech(...techs, response.data);
+      setTechs([...techs, response.data]);
       toast.success("Tecnologia adicionada com sucesso");
+      navigate("/dashboard");
     } catch (error) {
       toast.error(error.message);
     }
@@ -40,10 +28,21 @@ export const TechProvider = ({ children }) => {
 
   const UpdateTech = async (idTech, formData) => {
     try {
-      const response = await api.put(`/users/techs${idTech}`, formData, {
+      const response = await api.put(`/users/techs/${idTech}`, formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
+      const newTechs = techs.map((tech) => {
+        if (idTech === tech.id) {
+          return { ...tech, ...formData };
+        } else {
+          return tech;
+        }
+      });
+
+      setTechs(newTechs);
       toast.success("Tecnologia atualizada");
+      navigate("/dashboard");
     } catch (error) {
       toast.error(error.message);
     }
@@ -51,12 +50,13 @@ export const TechProvider = ({ children }) => {
 
   const DeleteTech = async (idTech) => {
     try {
-      const response = await api.delete(`/users/techs${idTech}`, {
+      const response = await api.delete(`/users/techs/${idTech}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Tecnologia Excluida");
-      const newTechs = techs.filter((tech) => tech.id === !idTech);
-      setTech(newTechs);
+      const newTechs = techs.filter((tech) => tech.id !== idTech);
+      setTechs(newTechs);
+      navigate("/dashboard");
     } catch (error) {
       toast.error(error.message);
     }
@@ -65,12 +65,14 @@ export const TechProvider = ({ children }) => {
     <TechContext.Provider
       value={{
         createCardTech,
-        modal,
-        setModal,
+        modalCreateTech,
+        setModalCreateTech,
         techs,
-        setTech,
+        setTechs,
         DeleteTech,
         UpdateTech,
+        modalEditTech,
+        setModalEditTech,
       }}
     >
       {children}

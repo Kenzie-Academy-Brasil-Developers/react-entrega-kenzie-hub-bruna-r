@@ -7,7 +7,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Input } from "../Input";
 
 export function UpdateTechForm() {
-  const { setModal, UpdateTech, DeleteTech } = useContext(TechContext);
+  const { setModal, UpdateTech, DeleteTech, modalEditTech, setModalEditTech } =
+    useContext(TechContext);
   const {
     register,
     handleSubmit,
@@ -15,18 +16,22 @@ export function UpdateTechForm() {
     reset,
   } = useForm({
     resolver: yupResolver(updateTechFormSchema),
+    defaultValues: {
+      title: modalEditTech.title,
+      status: modalEditTech.status,
+    },
   });
 
   const submit = (formData) => {
-    UpdateTech(formData);
-    setModal(false);
+    UpdateTech(modalEditTech.id, formData);
+    setModalEditTech(null);
     reset();
   };
   return (
     <form onSubmit={handleSubmit(submit)}>
       <div className="HeaderForm">
         <p>Atualizar Tecnologia</p>
-        <p onClick={() => setModal(false)}>X</p>
+        <p onClick={() => setModalEditTech(null)}>X</p>
       </div>
       <Input
         type="text"
@@ -43,7 +48,14 @@ export function UpdateTechForm() {
       />
       <div className="ContainerButtonForm">
         <button type="submit">Salvar alterações</button>
-        <button onClick={() => DeleteTech()}>Excluir</button>
+        <button
+          type="button"
+          onClick={() => {
+            DeleteTech(modalEditTech.id), setModalEditTech(null);
+          }}
+        >
+          Excluir
+        </button>
       </div>
     </form>
   );

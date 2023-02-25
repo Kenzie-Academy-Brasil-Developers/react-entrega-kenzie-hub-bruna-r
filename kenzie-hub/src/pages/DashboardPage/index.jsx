@@ -8,13 +8,16 @@ import {
   StyledSectionTecnologyList,
 } from "../../pages/DashboardPage/style";
 import { TechContext } from "../../providers/TechContext";
-import { AddTechForm } from "../../components/forms/AddTechForm";
 import { TechList } from "./TechList";
+import { AddTechForm } from "../../components/forms/AddTechForm";
+import { UpdateTechForm } from "../../components/forms/UpdateTechForm";
 
 export function DashboardPage() {
-  const { modal, setModal, techs } = useContext(TechContext);
-  const { logOut, user } = useContext(UserContext);
-  console.log(techs);
+  const { modalEditTech, modalCreateTech, setModalCreateTech } =
+    useContext(TechContext);
+
+  const { logOut, user, techs } = useContext(UserContext);
+
   return (
     <>
       <StyledHeaderPage>
@@ -33,21 +36,35 @@ export function DashboardPage() {
           <button
             className="BtnAddTech"
             onClick={() => {
-              setModal(true);
+              setModalCreateTech(true);
             }}
           >
             +
           </button>
         </div>
-        {techs.length > 0 && (
-          <ul>
-            {techs.map((tech) => (
-              <TechList key={tech.id} tech={tech} />
-            ))}
-          </ul>
-        )}
+        <div>
+          {techs.length > 0 ? (
+            <ul>
+              {techs.map((tech) => (
+                <TechList key={tech.id} tech={tech} />
+              ))}
+            </ul>
+          ) : (
+            <p>Nenhuma tecnologia cadastrada</p>
+          )}
+        </div>
       </StyledSectionTecnologyList>
-      {modal && <Modal />}
+      {modalCreateTech && (
+        <Modal>
+          <AddTechForm />
+        </Modal>
+      )}
+
+      {modalEditTech && (
+        <Modal>
+          <UpdateTechForm />
+        </Modal>
+      )}
     </>
   );
 }
